@@ -1,6 +1,6 @@
 
 
-class agent:
+class Agent:
     def __init__(self, coo_x: int, coo_y: int) -> None:
         self._vision: dict[str, list[str]] = {
             'right': [],
@@ -13,6 +13,9 @@ class agent:
 
     def update_vision(self, vision: dict[str, list[str]]) -> None:
         self.vision = vision
+
+    def get_coo(self) -> tuple[int, int]:
+        return self.coo
 
     def go_up(self) -> None:
         self.coo = (self.coo[0], self.coo[1] + 1)
