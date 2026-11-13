@@ -1,7 +1,6 @@
 from __future__ import annotations
 from collections import deque
 from typing import Callable
-
 from enums import X, Y, Update_map
 from map import Map
 
