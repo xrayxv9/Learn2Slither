@@ -1,26 +1,26 @@
-from random import choice
+from random import choice, randint
+from apple import Apple
+from agent import Agent
 from enums import X, Y, Update_map
 
 
 class Map:
-    def __init__(self) -> None:
+    def __init__(self, map_size: int) -> None:
         self._map: list[list[str]] = [
-            ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'],
-            ['W', '0', '0', '0', '0', '0', '0', '0', '0', 'W'],
-            ['W', '0', '0', '0', '0', '0', '0', '0', '0', 'W'],
-            ['W', '0', '0', '0', '0', '0', '0', '0', '0', 'W'],
-            ['W', '0', '0', '0', '0', '0', '0', '0', '0', 'W'],
-            ['W', '0', '0', '0', '0', '0', '0', '0', '0', 'W'],
-            ['W', '0', '0', '0', '0', '0', '0', '0', '0', 'W'],
-            ['W', '0', '0', '0', '0', '0', '0', '0', '0', 'W'],
-            ['W', '0', '0', '0', '0', '0', '0', '0', '0', 'W'],
-            ['W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W'],
+            ['W'] * map_size if i == 0 or i == map_size - 1 else ['W'] + ['0'] * (map_size - 2) + ['W']
+            for i in range(map_size)
         ]
-
+        self.map_size = map_size
         self.last_action: Update_map
 
     def get_map(self) -> list[list[str]]:
         return (self._map)
+
+    def print_map(self) -> None:
+        for line in self._map:
+            for row in line:
+                print(f'{row}', end='')
+            print('')
 
     def __get_zero(self) -> list[tuple[int, int]]:
         ret_value: list[tuple[int, int]] = []
@@ -32,9 +32,18 @@ class Map:
 
         return ret_value
 
+    def snake_spawn(self) -> list[tuple[int, int]]:
+        line = randint(1, self.map_size - 2)
+        row= randint(3, self.map_size - 2)
+        ret = [(line, row), (line, row - 1), (line, row - 2)]
+
+        self._map[ret[0][0]][ret[0][1]] = 'H'
+        self._map[ret[1][0]][ret[1][1]] = 'S'
+        self._map[ret[2][0]][ret[2][1]] = 'S'
+        return ret
+
     def generate_new_position(self) -> tuple[int, int]:
         positions: list[tuple[int, int]] = self.__get_zero()
-
         return choice(positions)
 
     def check_availibility(self, coo: tuple[int, int]) -> bool:
@@ -44,13 +53,17 @@ class Map:
         return False
 
     def update_map(
-            self,
-            saved_coo: tuple[int, int],
-            new_coo: tuple[int, int],
-            character: str = 'H'
+        self,
+        head: Agent,
+        apples: list[Apple]
     ) -> Update_map:
 
         self.last_action = Update_map.NOTHING
+
+        head_coo: tuple[int, int] = head.get_coo()
+        # TODO
+        # change the all update_map system to update depending on the coordonates
+        # the changes events should be detected with the watcher BE CAREFUL
 
         if self._map[saved_coo[Y]][saved_coo[X]] == 'G' and character != 'G':
             self._map[saved_coo[Y]][saved_coo[X]] = '0'
