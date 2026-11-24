@@ -9,4 +9,9 @@ class Apple:
     def displace(self, map: Map):
         save_coo = self.coo
         self.coo = map.generate_new_position()
-        map.update_map(save_coo, self.coo, self.color)
+
+    def get_coo(self) -> tuple[int, int]:
+        return self.coo
+
+    def get_type(self) -> str:
+        return self.color
