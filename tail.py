@@ -11,14 +11,12 @@ class Tail:
         coo_y: int,
         coo_x: int,
         actions_to_do: deque[Callable[[], None]],
-        map: Map,
         next_tail: Tail | None = None
     ) -> None:
 
         self.next: Tail | None = next_tail
         self.actions: deque[Callable[[], None]] = deque(actions_to_do)
         self.coo: tuple[int, int] = (coo_y, coo_x)
-        self.map = map
 
     def act(self, eaten: Update_map, new_action: Callable[[], None]):
         self.actions.append(new_action)
@@ -29,7 +27,6 @@ class Tail:
                     self.coo[Y],
                     self.coo[X],
                     self.actions,
-                    self.map
                 )
             if (
                 eaten == Update_map.RED_APPLE_EATEN and
@@ -38,12 +35,13 @@ class Tail:
             ):
                 self.next = None
 
-        saved_coo: tuple[int, int] = (self.coo[Y], self.coo[X])
         self.actions.popleft()()
-        self.map.update_map(saved_coo, self.coo, 'S')
         if (self.next):
             self.next.act(eaten, new_action)
 
+    def set_up_actions(self, action: deque[Callable[[], None]]):
+        self.actions = action
+        
     def go_up(self) -> None:
         self.coo = (self.coo[Y] + 1, self.coo[X])
 
