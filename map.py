@@ -1,7 +1,7 @@
 from random import choice, randint
 from apple import Apple
 from agent import Agent
-from enums import X, Y, Update_map
+from enums import ENDC, OKBLUE, OKCYAN, OKGREEN, ORANGE, RED, WARNING, X, Y, YELLOW, Update_map
 
 
 class Map:
@@ -19,7 +19,18 @@ class Map:
     def print_map(self) -> None:
         for line in self._map:
             for row in line:
-                print(f'{row}', end='')
+                if (row == 'G'):
+                    print(f'{OKGREEN}{row}{ENDC}', end='')
+                elif (row == 'R'):
+                    print(f'{WARNING}{row}{ENDC}', end='')
+                elif (row == 'H'):
+                    print(f'{ORANGE}{row}{ENDC}', end='')
+                elif (row == 'S'):
+                    print(f'{OKCYAN}{row}{ENDC}', end='')
+                elif (row == 'W'):
+                    print(f'{YELLOW}{row}{ENDC}', end='')
+                else:
+                    print(f'{row}', end='')
             print('')
 
     def __get_zero(self) -> list[tuple[int, int]]:
@@ -32,6 +43,16 @@ class Map:
 
         return ret_value
 
+    def finished(self) -> bool:
+        for row in self._map:
+            for cell in row:
+                if cell == '0' or cell == 'G':
+                    self.print_map()
+                    return False
+        return True
+
+
+
     def snake_spawn(self) -> list[tuple[int, int]]:
         line = randint(1, self.map_size - 2)
         row= randint(3, self.map_size - 2)
@@ -42,10 +63,12 @@ class Map:
         self._map[ret[2][0]][ret[2][1]] = 'S'
         return ret
 
-    def generate_new_position(self) -> tuple[int, int]:
+    def generate_new_position(self, color: str) -> tuple[int, int] | None:
         positions: list[tuple[int, int]] = self.__get_zero()
-        return choice(positions)
-
+        ret = choice(positions) if positions else None
+        if ret is not None:
+            self._map[ret[Y]][ret[X]] = color
+        return ret
     def check_availibility(self, coo: tuple[int, int]) -> bool:
         if (self._map[coo[Y]][coo[X]] == '0'):
             return True
@@ -59,29 +82,60 @@ class Map:
     ) -> Update_map:
 
         self.last_action = Update_map.NOTHING
+        current_coo = head.get_coo()
+        current_square = self._map[current_coo[0]][current_coo[1]]
 
-        head_coo: tuple[int, int] = head.get_coo()
-        # TODO
-        # change the all update_map system to update depending on the coordonates
-        # the changes events should be detected with the watcher BE CAREFUL
+        match current_square:
+            case 'G':
+                self.last_action = Update_map.GREEN_APPLE_EATEN
+                for apple in apples:
+                    if (apple.get_coo() == current_coo):
+                        new_coords = self.generate_new_position(apple.get_type())
+                        apple.displace(new_coords);
+                        if (new_coords is not None):
+                            self._map[new_coords[Y]][new_coords[X]] = 'G'
+            case 'R':
+                self.last_action = Update_map.RED_APPLE_EATEN
+                for apple in apples:
+                    if (apple.get_coo() == current_coo):
+                        new_coords = self.generate_new_position(apple.get_type())
+                        apple.displace(new_coords);
+                        if (new_coords is not None):
+                            self._map[new_coords[Y]][new_coords[X]] = 'R'
+            case 'W':
+                self.last_action = Update_map.WALL
+            case 'S':
+                tail = head.tail
+                while tail is not None:
+                    if (current_coo == tail.get_coo()):
+                        self.last_action = Update_map.TAIL
+                    tail = tail.next
 
-        if self._map[saved_coo[Y]][saved_coo[X]] == 'G' and character != 'G':
-            self._map[saved_coo[Y]][saved_coo[X]] = '0'
-            self._map[new_coo[Y]][new_coo[X]] = character
-            self.last_action = Update_map.GREEN_APPLE_EATEN
+        snake_coo = current_coo
+        
+        tail = head.tail
+        while (tail!= None):
+            current_coo = tail.get_coo()
+            saved_coo = tail.get_saved_coo()
+            if (tail.next is not None and
+                tail.next.alive == False):
+                self._map[tail.next.get_coo()[0]][tail.next.get_coo()[1]] = '0'
+                tail.next = None
+            self._map[current_coo[0]][current_coo[1]] = 'S'
+            if (saved_coo != current_coo):
+                self._map[saved_coo[0]][saved_coo[1]] = '0'
+            tail = tail.next
 
-        elif self._map[saved_coo[Y]][saved_coo[X]] == 'R' and character != 'R':
-            self._map[saved_coo[Y]][saved_coo[X]] = character
-            self.last_action = Update_map.RED_APPLE_EATEN
+        i: int = 0
+        for apple in apples:
+            coo = apple.get_coo()
+            if (coo is not None):
+                self._map[coo[Y]][coo[X]] = apple.get_type()
+            print(f"apple: {i}, {coo}")
+            i+=1
 
-        elif self._map[new_coo[Y]][new_coo[X]] == 'W':
-            self.last_action = Update_map.WALL
+        self._map[snake_coo[0]][snake_coo[1]] = 'H'
+        return self.last_action
 
-        elif self._map[new_coo[Y]][new_coo[X]] == 'S':
-            self.last_action = Update_map.TAIL
-
-        else:
-            self._map[saved_coo[Y]][saved_coo[X]] = '0'
-            self._map[new_coo[Y]][new_coo[X]] = character
-
+    def get_state(self) -> Update_map:
         return self.last_action
