@@ -1,16 +1,12 @@
-from map import Map
-
-
 class Apple:
     def __init__(self, color: str) -> None:
         self.color: str = color
-        self.coo: tuple[int, int]
+        self.coo: tuple[int, int] | None
 
-    def displace(self, map: Map):
-        save_coo = self.coo
-        self.coo = map.generate_new_position()
+    def displace(self, new_coords: tuple[int, int] | None):
+        self.coo = new_coords;
 
-    def get_coo(self) -> tuple[int, int]:
+    def get_coo(self) -> tuple[int, int] | None:
         return self.coo
 
     def get_type(self) -> str:
