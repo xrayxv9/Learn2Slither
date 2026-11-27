@@ -47,7 +47,6 @@ class Map:
         for row in self._map:
             for cell in row:
                 if cell == '0' or cell == 'G':
-                    self.print_map()
                     return False
         return True
 
@@ -131,7 +130,6 @@ class Map:
             coo = apple.get_coo()
             if (coo is not None):
                 self._map[coo[Y]][coo[X]] = apple.get_type()
-            print(f"apple: {i}, {coo}")
             i+=1
 
         self._map[snake_coo[0]][snake_coo[1]] = 'H'

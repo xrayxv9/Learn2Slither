@@ -25,7 +25,6 @@ class Tail:
         }
         self.last_action: str;
     def act(self, new_action: str): 
-        print(f"TAIL INIT | coo={self.coo} | actions={list(self.actions)}")
         match new_action:
             case 'up':
                 self.actions.append('up')
@@ -49,7 +48,6 @@ class Tail:
                     self.next.act('right')
 
     def grow(self) -> None:
-        print(f"GROW: coo: {self.coo}, saved: {self.saved_coo}")
         if self.next is None:
             copy = deque(self.actions)
             copy.appendleft(self.last_action)
@@ -58,7 +56,6 @@ class Tail:
                 self.saved_coo[X],
                 copy,
             )
-            print(f"GROW: coo: {self.next.coo}, saved: {self.next.saved_coo}")
         else:
             self.next.grow()
 
