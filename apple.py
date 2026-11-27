@@ -4,7 +4,7 @@ class Apple:
         self.coo: tuple[int, int] | None
 
     def displace(self, new_coords: tuple[int, int] | None):
-        self.coo = new_coords;
+        self.coo = new_coords
 
     def get_coo(self) -> tuple[int, int] | None:
         return self.coo

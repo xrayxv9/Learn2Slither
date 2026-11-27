@@ -17,14 +17,15 @@ class Tail:
         self.next: Tail | None = next_tail
         self.actions: deque[str] = deque(actions_to_do)
         self.coo: tuple[int, int] = (coo_y, coo_x)
-        self.executable: dict[str, Callable[[], None]] ={
+        self.executable: dict[str, Callable[[], None]] = {
             'up': self.go_up,
             'down': self.go_down,
             'right': self.go_right,
             'left': self.go_left
         }
-        self.last_action: str;
-    def act(self, new_action: str): 
+        self.last_action: str
+
+    def act(self, new_action: str):
         match new_action:
             case 'up':
                 self.actions.append('up')
@@ -35,7 +36,7 @@ class Tail:
             case 'right':
                 self.actions.append('right')
 
-        self.executable[self.actions.popleft()]() 
+        self.executable[self.actions.popleft()]()
         if (self.next):
             match new_action:
                 case 'up':
@@ -61,7 +62,7 @@ class Tail:
 
     def shrink(self) -> None:
         if (self.next is not None and
-            self.next.next is None):
+           self.next.next is None):
             self.next.alive = False
         elif (self.next is not None and
               self.next.next is not None):
@@ -72,7 +73,7 @@ class Tail:
 
     def get_coo(self) -> tuple[int, int]:
         return self.coo
-        
+
     def get_saved_coo(self) -> tuple[int, int]:
         return self.saved_coo
 

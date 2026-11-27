@@ -1,11 +1,7 @@
 from enum import Enum
 
 X = 1
-
-
 Y = 0
-
-
 HEADER = '\033[95m'
 OKBLUE = '\033[94m'
 OKCYAN = '\033[96m'
@@ -17,6 +13,7 @@ BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
 ORANGE = '\033[38;5;208m'
 YELLOW = '\033[38;5;226m'
+
 
 class Update_map(Enum):
     WON = 5

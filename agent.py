@@ -2,6 +2,7 @@ from collections import deque
 from enums import Y, X
 import tail
 
+
 class Agent:
     def __init__(self, coo_y: int, coo_x: int) -> None:
         self._vision: dict[str, list[str]] = {
@@ -24,20 +25,20 @@ class Agent:
         self.tail.next.set_up_actions(deque(['right', 'right']))
 
     def print_vision(self):
-        for t in self._vision["up"]:
+        for up in self._vision["up"]:
             for _ in self._vision["left"]:
                 print(" ", end="")
-            print(t)
-        for l in self._vision["left"]:
-            print(l, end="")
+            print(up)
+        for left in self._vision["left"]:
+            print(left, end="")
         print("H", end="")
-        for r in self._vision["right"]:
-            print(r, end="")
+        for right in self._vision["right"]:
+            print(right, end="")
         print()
-        for b in self._vision["bot"]:
+        for bot in self._vision["bot"]:
             for _ in self._vision["left"]:
                 print(" ", end="")
-            print(b)
+            print(bot)
 
     def grow(self):
         self.tail.grow()
@@ -50,28 +51,28 @@ class Agent:
 
     def go_up(self) -> None:
         if (self.last_action == 'down'):
-            return 
+            return
         self.coo = (self.coo[Y] - 1, self.coo[X])
         self.tail.act('up')
         self.last_action = 'up'
 
     def go_down(self) -> None:
         if (self.last_action == 'up'):
-            return 
+            return
         self.coo = (self.coo[Y] + 1, self.coo[X])
         self.tail.act('down')
         self.last_action = 'down'
 
     def go_right(self) -> None:
         if (self.last_action == 'left'):
-            return 
+            return
         self.coo = (self.coo[Y], self.coo[X] + 1)
         self.tail.act('right')
         self.last_action = 'right'
 
     def go_left(self) -> None:
         if (self.last_action == 'right'):
-            return 
+            return
         self.coo = (self.coo[Y], self.coo[X] - 1)
         self.tail.act('left')
         self.last_action = 'left'

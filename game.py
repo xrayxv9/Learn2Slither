@@ -1,8 +1,10 @@
 from agent import Agent
 from enums import X, Y, Update_map
 from map import Map
+from utils import lost_message
 from watcher import Watcher
 import subprocess
+
 
 class Game:
     def __init__(self, map_size: int) -> None:
@@ -48,8 +50,8 @@ class Game:
                 print("You Won !")
                 subprocess.run(['sleep', '2'])
                 self.restart()
-            elif (exit_status == Update_map.TAIL or exit_status == Update_map.WALL):
-                print(f"You lost due to: {'your tail' if exit_status == Update_map.TAIL else 'a wall'}")
+            elif (exit_status == Update_map.TAIL or
+                  exit_status == Update_map.WALL):
+                lost_message(exit_status)
                 subprocess.run(['sleep', '2'])
                 self.restart()
-

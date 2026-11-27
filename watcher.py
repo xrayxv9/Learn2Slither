@@ -3,6 +3,7 @@ from apple import Apple
 from enums import Y, X, Update_map
 from map import Map
 
+
 class Watcher:
     def __init__(self, head: Agent, map: Map) -> None:
         self.head: Agent = head
@@ -17,7 +18,7 @@ class Watcher:
 
         if head_position[Y] == -1:
             return False
-        
+
         vision: dict[str, list[str]] = {
             'right': [],
             'left': [],
@@ -41,19 +42,18 @@ class Watcher:
             else:
                 vision["right"].append(map[head_position[Y]][x])
 
-        self.head.update_vision(vision);
+        self.head.update_vision(vision)
 
     def find_head(self, map: list[list[str]]) -> tuple[int, int]:
         for y, row in enumerate(map):
             for x, cell in enumerate(row):
                 if (cell == 'H'):
-                    return (y ,x)
+                    return (y, x)
 
         return (-1, -1)
 
     def print_vision(self):
         self.head.print_vision()
-
 
     def init_apples(self):
         for apple in self.apples:

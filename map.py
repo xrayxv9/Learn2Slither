@@ -1,13 +1,23 @@
 from random import choice, randint
 from apple import Apple
 from agent import Agent
-from enums import ENDC, OKBLUE, OKCYAN, OKGREEN, ORANGE, RED, WARNING, X, Y, YELLOW, Update_map
+from enums import (ENDC,
+                   OKCYAN,
+                   OKGREEN,
+                   ORANGE,
+                   WARNING,
+                   X,
+                   Y,
+                   YELLOW,
+                   Update_map)
 
 
 class Map:
     def __init__(self, map_size: int) -> None:
         self._map: list[list[str]] = [
-            ['W'] * map_size if i == 0 or i == map_size - 1 else ['W'] + ['0'] * (map_size - 2) + ['W']
+            ['W'] * map_size if i == 0 or
+            i == map_size - 1 else
+            ['W'] + ['0'] * (map_size - 2) + ['W']
             for i in range(map_size)
         ]
         self.map_size = map_size
@@ -50,11 +60,9 @@ class Map:
                     return False
         return True
 
-
-
     def snake_spawn(self) -> tuple[int, int]:
         line = randint(1, self.map_size - 2)
-        row= randint(3, self.map_size - 2)
+        row = randint(3, self.map_size - 2)
         ret = [(line, row), (line, row - 1), (line, row - 2)]
 
         self._map[ret[0][0]][ret[0][1]] = 'H'
@@ -68,6 +76,7 @@ class Map:
         if ret is not None:
             self._map[ret[Y]][ret[X]] = color
         return ret
+
     def check_availibility(self, coo: tuple[int, int]) -> bool:
         if (self._map[coo[Y]][coo[X]] == '0'):
             return True
@@ -89,16 +98,18 @@ class Map:
                 self.last_action = Update_map.GREEN_APPLE_EATEN
                 for apple in apples:
                     if (apple.get_coo() == current_coo):
-                        new_coords = self.generate_new_position(apple.get_type())
-                        apple.displace(new_coords);
+                        new_coords = self.generate_new_position(
+                            apple.get_type())
+                        apple.displace(new_coords)
                         if (new_coords is not None):
                             self._map[new_coords[Y]][new_coords[X]] = 'G'
             case 'R':
                 self.last_action = Update_map.RED_APPLE_EATEN
                 for apple in apples:
                     if (apple.get_coo() == current_coo):
-                        new_coords = self.generate_new_position(apple.get_type())
-                        apple.displace(new_coords);
+                        new_coords = self.generate_new_position(
+                            apple.get_type())
+                        apple.displace(new_coords)
                         if (new_coords is not None):
                             self._map[new_coords[Y]][new_coords[X]] = 'R'
             case 'W':
@@ -111,13 +122,13 @@ class Map:
                     tail = tail.next
 
         snake_coo = current_coo
-        
         tail = head.tail
-        while (tail!= None):
+        while (tail is not None):
             current_coo = tail.get_coo()
             saved_coo = tail.get_saved_coo()
             if (tail.next is not None and
-                tail.next.alive == False):
+               tail.next.alive is False):
+
                 self._map[tail.next.get_coo()[0]][tail.next.get_coo()[1]] = '0'
                 tail.next = None
             self._map[current_coo[0]][current_coo[1]] = 'S'
@@ -130,7 +141,7 @@ class Map:
             coo = apple.get_coo()
             if (coo is not None):
                 self._map[coo[Y]][coo[X]] = apple.get_type()
-            i+=1
+            i += 1
 
         self._map[snake_coo[0]][snake_coo[1]] = 'H'
         return self.last_action

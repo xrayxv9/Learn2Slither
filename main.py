@@ -1,14 +1,11 @@
 # import pygame
 import argparse
-from agent import Agent
-from enums import Y, X, Update_map
 from game import Game
-from map import Map
-from watcher import Watcher
 
 parser = argparse.ArgumentParser(description='map size')
 
-parser.add_argument('--size', action='store', dest='map_size', default=10, type=int)
+parser.add_argument('--size', action='store',
+                    dest='map_size', default=10, type=int)
 
 args = parser.parse_args()
 
