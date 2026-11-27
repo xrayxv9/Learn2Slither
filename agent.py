@@ -12,6 +12,8 @@ class Agent:
         }
         self.coo: tuple[int, int] = (coo_y, coo_x)
         self.tail: tail.Tail
+        self.last_action: str = 'right'
+
     def update_vision(self, vision: dict[str, list[str]]) -> None:
         self._vision = vision
 
@@ -47,17 +49,29 @@ class Agent:
         return self.coo
 
     def go_up(self) -> None:
+        if (self.last_action == 'down'):
+            return 
         self.coo = (self.coo[Y] - 1, self.coo[X])
         self.tail.act('up')
+        self.last_action = 'up'
 
     def go_down(self) -> None:
+        if (self.last_action == 'up'):
+            return 
         self.coo = (self.coo[Y] + 1, self.coo[X])
         self.tail.act('down')
+        self.last_action = 'down'
 
     def go_right(self) -> None:
+        if (self.last_action == 'left'):
+            return 
         self.coo = (self.coo[Y], self.coo[X] + 1)
         self.tail.act('right')
+        self.last_action = 'right'
 
     def go_left(self) -> None:
+        if (self.last_action == 'right'):
+            return 
         self.coo = (self.coo[Y], self.coo[X] - 1)
         self.tail.act('left')
+        self.last_action = 'left'
