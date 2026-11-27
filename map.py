@@ -52,7 +52,7 @@ class Map:
 
 
 
-    def snake_spawn(self) -> list[tuple[int, int]]:
+    def snake_spawn(self) -> tuple[int, int]:
         line = randint(1, self.map_size - 2)
         row= randint(3, self.map_size - 2)
         ret = [(line, row), (line, row - 1), (line, row - 2)]
@@ -60,7 +60,7 @@ class Map:
         self._map[ret[0][0]][ret[0][1]] = 'H'
         self._map[ret[1][0]][ret[1][1]] = 'S'
         self._map[ret[2][0]][ret[2][1]] = 'S'
-        return ret
+        return ret[0]
 
     def generate_new_position(self, color: str) -> tuple[int, int] | None:
         positions: list[tuple[int, int]] = self.__get_zero()
